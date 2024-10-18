@@ -1,11 +1,19 @@
 <?php
 namespace App\Services;
 
+use App\DTOs\OfertaDTO;
 use Illuminate\Support\Facades\Http;
-
+use App\Repositories\OfertaRepository;
 
 class SimulacaoCreditoService
 {
+    protected $ofertaRepository;
+
+    public function __construct(OfertaRepository $ofertaRepository)
+    {
+        $this->ofertaRepository = $ofertaRepository;
+    }
+
     public function getCredito($cpf)
     {
         return Http::gosatapi()->post('/credito', [
@@ -33,7 +41,7 @@ class SimulacaoCreditoService
          return $dadosInstituicoes->json()['instituicoes'];
     }
 
-    public function getOfertaCredito($cpf, $ordenacao)
+    public function getOfertaCredito($cpf, $ordenacao = null)
     {
          $instituicoes = $this->getInstituicaoFinanceira($cpf);
 
@@ -44,21 +52,23 @@ class SimulacaoCreditoService
                  $responseOferta = $this->getOferta($cpf, $instituicao['id'], $modalidade['cod']);
 
                  if ($responseOferta->successful()) {
-                     $ofertas[] = [
-                         'instituicao' => $instituicao['nome'],
-                         'modalidade' => $modalidade['nome'],
-                         'oferta' => $responseOferta->json()
-                     ];
+                    $ofertaData = $responseOferta->json();
+
+                     $ofertaDTO = new OfertaDTO($cpf, $instituicao['nome'], $modalidade['nome'], $ofertaData);
+
+                     $this->ofertaRepository->salvarOferta($ofertaDTO);
+                     $this->ofertaRepository->salvarOfertaNoRedis($ofertaDTO);
+                     $ofertas[] = $ofertaDTO;
                  }
              }
          }
 
-         // Aplicar ordenação, se fornecida
-        if ($ordenacao) {
-            usort($ofertas, function ($a, $b) use ($ordenacao) {
-                return $a['oferta'][$ordenacao] <=> $b['oferta'][$ordenacao];
-            });
-        }
+
+         if ($ordenacao) {
+             usort($ofertas, function ($a, $b) use ($ordenacao) {
+                 return $a->{$ordenacao} <=> $b->{$ordenacao};
+             });
+         }
 
          return response()->json($ofertas);
     }
