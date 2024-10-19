@@ -19,7 +19,7 @@ class Kernel extends ConsoleKernel
         foreach ($cpfKeys as $key) {
             $cpf = explode(':', $key)[1];
 
-            $schedule->job(new ProcessarOfertasJob($cpf))->everyMinute();
+            $schedule->job(new ProcessarOfertasJob($cpf))->everyFiveMinutes();
         }
     }
 
