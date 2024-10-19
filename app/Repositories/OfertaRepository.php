@@ -27,7 +27,9 @@ class OfertaRepository
 
     public function salvarOfertaNoRedis($ofertaDTO)
     {
-        $key = "oferta:{$ofertaDTO->cpf}:{$ofertaDTO->instituicao}:{$ofertaDTO->modalidade}";
+        $instituicao = limparString($ofertaDTO->instituicao);
+        $modalidade = limparString($ofertaDTO->modalidade);
+        $key = "oferta:{$ofertaDTO->cpf}:{$instituicao}:{$modalidade}";
         $value = json_encode($ofertaDTO);
 
         Redis::setex($key, 86400, $value);
@@ -35,7 +37,9 @@ class OfertaRepository
 
     public function obterOfertaDoRedis($ofertaDTO)
     {
-        $key = "oferta:{$ofertaDTO->cpf}:{$ofertaDTO->instituicao}:{$ofertaDTO->modalidade}";
+        $instituicao = limparString($ofertaDTO->instituicao);
+        $modalidade = limparString($ofertaDTO->modalidade);
+        $key = "oferta:{$ofertaDTO->cpf}:{$instituicao}:{$modalidade}";
         $oferta = Redis::get($key);
 
         if ($oferta) {

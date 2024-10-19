@@ -1,0 +1,37 @@
+{
+	"info": {
+		"_postman_id": "63de7d43-0114-4329-85dd-63b81fef7ff7",
+		"name": "Api Gosat",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33747152"
+	},
+	"item": [
+		{
+			"name": "localhost/api/oferta-credito",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ordenacao\": \"valorMin\",\n    // \"ordenacao\": \"QntParcelaMin\",\n    // \"ordenacao\": \"jurosMes\",\n    \"cpf\": \"11111111111\"\n    // \"cpf\": \"12312312312\"\n    // \"cpf\": \"22222222222\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost/api/oferta-credito",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"oferta-credito"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

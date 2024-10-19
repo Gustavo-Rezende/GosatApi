@@ -17,11 +17,9 @@ class Kernel extends ConsoleKernel
         $cpfKeys = Redis::keys('oferta:*');
 
         foreach ($cpfKeys as $key) {
-            // Extrair o CPF da chave. Supondo que a chave seja do formato 'oferta:{cpf}:instituicao:modalidade'
             $cpf = explode(':', $key)[1];
 
-            // Para cada CPF, agendar o job dinamicamente
-            $schedule->job(new ProcessarOfertasJob($cpf))->everyFiveMinutes();
+            $schedule->job(new ProcessarOfertasJob($cpf))->everyMinute();
         }
     }
 
